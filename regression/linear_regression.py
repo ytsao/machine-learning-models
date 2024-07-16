@@ -24,8 +24,8 @@ def loss_function(w, b, X, y):
 def main():
     X_train, X_test, y_train, y_test = create_dataset()
     weights = jnp.zeros((X_train.shape[1], 1))
-    bias = 0. 
-    learning_rate = 0.001
+    bias = 0.1 
+    learning_rate = 0.01
     num_iterations = 3000
 
     grad_weights = jit(grad(loss_function, argnums=0))
@@ -41,6 +41,15 @@ def main():
 
     error = loss_function(weights, bias, X_test, y_test)
     print(f"Error: {error}")
+
+    y_pred = X_test.dot(weights) + bias 
+    print(y_pred)
+    # fig = plt.figure(figsize=(8,6))
+    plt.scatter(X_test[:, 0], y_test, c='r')
+    # plt.scatter(X_test[:,1], y_test, c='b')
+    plt.plot(X_test[:, 0], X_test[:, 0]*weights[0]+bias, c='g')
+    # plt.plot(X_test[:, 1], y_pred, c='y')
+    plt.show()
 
     return 
 
