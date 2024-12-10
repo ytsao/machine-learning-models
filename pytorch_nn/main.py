@@ -9,6 +9,7 @@ from FullyConnectedNet import FullyConnectedNet
 from LeNet import LeNet
 from AlexNet import AlexNet
 from VGGNet import VGGNet
+from toy_example import ToyNet
 
 
 device = (
@@ -168,7 +169,33 @@ def main():
             'optimizer': optimizer.state_dict(),
             'model_layers': model.model_layers,
         }
-    filename = f"{model_type}_{dataset}.pth"
+    elif model_type == "ToyNet":
+        model = ToyNet()
+        loss_fn = torch.nn.CrossEntropyLoss()
+        optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+        with torch.no_grad():
+            fc1_weight = torch.tensor([[0.8, 0.6],[-0.7, 0.5]])
+            model.layer[0].weight = torch.nn.Parameter(fc1_weight)
+            model.layer[0].bias = torch.nn.Parameter(torch.zeros(2))
+            
+            fc2_weight = torch.tensor([[-1, 0.4]])
+            model.layer[2].weight = torch.nn.Parameter(fc2_weight)
+            model.layer[2].bias = torch.nn.Parameter(torch.zeros(1)) 
+            
+            print(model.layer[0].weight)
+            print(model.layer[0].bias)
+            print(model.layer[2].weight)
+            print(model.layer[2].bias)
+        
+        # save the model into pth file.
+        state = {
+            'epoch': epochs,
+            'state_dict': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'model_layers': model.model_layers,
+        }
+         
+    filename = f"./trained_models/{model_type}_{dataset}.pth"
     torch.save(state, filename)
 
     return 
@@ -176,9 +203,10 @@ def main():
 
 if __name__ == "__main__":
     # dataset_list = ["MNIST", "CIFAR10"]
-    dataset_list = ["CIFAR10"]
+    dataset_list = ["MNIST"]
     # model_list = ["FullyConnectedNet", "LeNet", "AlexNet", "VGGNet"]
-    model_list = ["AlexNet", "VGGNet"]
+    # model_list = ["AlexNet", "VGGNet"]
+    model_list = ["ToyNet"]
     for d in dataset_list:
         for m in model_list:
             dataset = d

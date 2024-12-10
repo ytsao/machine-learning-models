@@ -10,8 +10,20 @@ class LeNet(torch.nn.Module):
         self.fc2 = torch.nn.Linear(in_features=120, out_features=84)
         self.fc3 = torch.nn.Linear(in_features=84, out_features=10)
 
-        self.model_layers = ["conv", "relu", "max_pool", "conv", "relu", "max_pool", 
-                             "flatten", "linear", "relu", "linear", "relu", "linear"]
+        # self.model_layers = ["conv", "relu", "max_pool", "conv", "relu", "max_pool", 
+        #                      "flatten", "linear", "relu", "linear", "relu", "linear"]
+        self.model_layers = [{"type": "Conv"},
+                             {"type": "ReLU"},
+                             {"type": "MaxPool"},
+                             {"type": "Conv"},
+                             {"type": "ReLU"},
+                             {"type": "MaxPool"},
+                             {"type": "Flatten"},
+                             {"type": "Linear", "parameters":[16*5*5, 120]},
+                             {"type": "ReLU"},
+                             {"type": "Linear", "parameters":[120, 84]},
+                             {"type": "ReLU"},
+                             {"type": "Linear", "parameters":[84, 10]}]
     
     def forward(self, x):
         x = torch.nn.functional.relu(self.conv1(x))

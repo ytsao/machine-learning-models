@@ -13,7 +13,7 @@ class AlexNet(torch.nn.Module):
         self.fc2 = torch.nn.Linear(in_features=4096, out_features=1024)
         self.fc3 = torch.nn.Linear(in_features=1024, out_features=num_classes)
 
-        self.model_layers = []
+        self.model_layers = [] # TODO: complete the model_layers information for applying proof_sharing library.
 
     def forward(self, x):
         x = torch.nn.functional.relu(self.conv1(x))
