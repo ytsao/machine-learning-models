@@ -10,6 +10,9 @@ from LeNet import LeNet
 from AlexNet import AlexNet
 from VGGNet import VGGNet
 from toy_example import ToyNet
+from caterina_ex1 import CaterinaEx1
+from caterina_ex2 import CaterinaEx2
+from deeppoly_ex import DeepPolyEx
 
 
 device = (
@@ -174,18 +177,112 @@ def main():
         loss_fn = torch.nn.CrossEntropyLoss()
         optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
         with torch.no_grad():
-            fc1_weight = torch.tensor([[0.8, 0.6],[-0.7, 0.5]])
-            model.layer[0].weight = torch.nn.Parameter(fc1_weight)
-            model.layer[0].bias = torch.nn.Parameter(torch.zeros(2))
+            fc1_weight = torch.tensor([[0.8, -0.7],[0.6, 0.5]], dtype=torch.float)
+            model.layers[0].weight = torch.nn.Parameter(fc1_weight)
+            model.layers[0].bias = torch.nn.Parameter(torch.zeros(2))
             
-            fc2_weight = torch.tensor([[-1, 0.4]])
-            model.layer[2].weight = torch.nn.Parameter(fc2_weight)
-            model.layer[2].bias = torch.nn.Parameter(torch.zeros(1)) 
+            fc2_weight = torch.tensor([[-1, 0.4]], dtype=torch.float)
+            model.layers[2].weight = torch.nn.Parameter(fc2_weight)
+            model.layers[2].bias = torch.nn.Parameter(torch.zeros(1)) 
             
-            print(model.layer[0].weight)
-            print(model.layer[0].bias)
-            print(model.layer[2].weight)
-            print(model.layer[2].bias)
+        # save the model into pth file.
+        state = {
+            'epoch': epochs,
+            'state_dict': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'model_layers': model.model_layers,
+        }
+    elif model_type == "ToyNetNeg":
+        model = ToyNet()
+        loss_fn = torch.nn.CrossEntropyLoss()
+        optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+        with torch.no_grad():
+            fc1_weight = torch.tensor([[-0.8, -0.7],[-0.6, -0.5]], dtype=torch.float)
+            model.layers[0].weight = torch.nn.Parameter(fc1_weight)
+            model.layers[0].bias = torch.nn.Parameter(torch.zeros(2))
+            
+            fc2_weight = torch.tensor([[-1, -0.4]], dtype=torch.float)
+            model.layers[2].weight = torch.nn.Parameter(fc2_weight)
+            model.layers[2].bias = torch.nn.Parameter(torch.zeros(1))
+        
+        # save the model into pth file.
+        state = {
+            'epoch': epochs,
+            'state_dict': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'model_layers': model.model_layers,
+        }
+    elif model_type == "CaterinaEx1":
+        model = CaterinaEx1()
+        loss_fn = torch.nn.CrossEntropyLoss()
+        optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+        with torch.no_grad():
+            fc1_weight = torch.tensor([[1, 1],[1, -1]], dtype=torch.float)
+            model.layers[0].weight = torch.nn.Parameter(fc1_weight)
+            model.layers[0].bias = torch.nn.Parameter(torch.zeros(2))
+            
+            fc2_weight = torch.tensor([[1, 1], [1, -1]], dtype=torch.float)
+            model.layers[2].weight = torch.nn.Parameter(fc2_weight)
+            model.layers[2].bias = torch.nn.Parameter(torch.zeros(2))
+            
+            fc3_weight = torch.tensor([[1, 1], [0, 1]], dtype=torch.float)
+            model.layers[4].weight = torch.nn.Parameter(fc3_weight)
+            model.layers[4].bias = torch.nn.Parameter(torch.tensor([1, -1.25]))
+        
+        # save the model into pth file.
+        state = {
+            'epoch': epochs,
+            'state_dict': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'model_layers': model.model_layers,
+        }
+    elif model_type == "CaterinaEx2":
+        model = CaterinaEx2()
+        loss_fn = torch.nn.CrossEntropyLoss()
+        optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+        with torch.no_grad():
+            fc1_weight = torch.tensor([[1, 1],[0.5, 0.5]], dtype=torch.float)
+            fc1_bias = torch.tensor([4,3], dtype=torch.float)
+            model.layers[0].weight = torch.nn.Parameter(fc1_weight)
+            model.layers[0].bias = torch.nn.Parameter(fc1_bias)
+            
+            fc2_weight = torch.tensor([[2, 3], [1, -1]], dtype=torch.float)
+            model.layers[2].weight = torch.nn.Parameter(fc2_weight)
+            model.layers[2].bias = torch.nn.Parameter(torch.zeros(2))
+            
+            fc3_weight = torch.tensor([[1, -1], [0.5, -1.5]], dtype=torch.float)
+            fc3_bias = torch.tensor([-14, -8], dtype=torch.float)
+            model.layers[4].weight = torch.nn.Parameter(fc3_weight)
+            model.layers[4].bias = torch.nn.Parameter(fc3_bias)
+            
+            fc4_weight = torch.tensor([[0.5, -2], [0, 1]], dtype=torch.float)
+            fc4_bias = torch.tensor([1, 0], dtype=torch.float)
+            model.layers[6].weight = torch.nn.Parameter(fc4_weight)
+            model.layers[6].bias = torch.nn.Parameter(fc4_bias)
+        
+        # save the model into pth file.
+        state = {
+            'epoch': epochs,
+            'state_dict': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'model_layers': model.model_layers,
+        }
+    elif model_type == "DeepPolyEx":
+        model = DeepPolyEx()
+        loss_fn = torch.nn.CrossEntropyLoss()
+        optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+        with torch.no_grad():
+            fc1_weight = torch.tensor([[1, 1],[1, -1]], dtype=torch.float)
+            model.layers[0].weight = torch.nn.Parameter(fc1_weight)
+            model.layers[0].bias = torch.nn.Parameter(torch.zeros(2))
+            
+            fc2_weight = torch.tensor([[1, 1], [1, -1]], dtype=torch.float)
+            model.layers[2].weight = torch.nn.Parameter(fc2_weight)
+            model.layers[2].bias = torch.nn.Parameter(torch.zeros(2))
+            
+            fc3_weight = torch.tensor([[1, 1], [0, 1]], dtype=torch.float)
+            model.layers[4].weight = torch.nn.Parameter(fc3_weight)
+            model.layers[4].bias = torch.nn.Parameter(torch.tensor([1, 0], dtype=torch.float))
         
         # save the model into pth file.
         state = {
@@ -195,7 +292,8 @@ def main():
             'model_layers': model.model_layers,
         }
          
-    filename = f"./trained_models/{model_type}_{dataset}.pth"
+    # filename = f"./trained_models/{model_type}_{dataset}.pth"
+    filename = f"./trained_models/{model_type}.pth"
     torch.save(state, filename)
 
     return 
@@ -206,7 +304,7 @@ if __name__ == "__main__":
     dataset_list = ["MNIST"]
     # model_list = ["FullyConnectedNet", "LeNet", "AlexNet", "VGGNet"]
     # model_list = ["AlexNet", "VGGNet"]
-    model_list = ["ToyNet"]
+    model_list = ["ToyNet", "ToyNetNeg", "CaterinaEx1", "CaterinaEx2", "DeepPolyEx"]
     for d in dataset_list:
         for m in model_list:
             dataset = d

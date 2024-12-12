@@ -3,7 +3,7 @@ import torch
 class ToyNet(torch.nn.Module):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.layer = torch.nn.Sequential(
+        self.layers = torch.nn.Sequential(
             torch.nn.Linear(in_features=2, out_features=2),
             torch.nn.ReLU(),
             torch.nn.Linear(in_features=2, out_features=1),
@@ -14,5 +14,5 @@ class ToyNet(torch.nn.Module):
                              {"type": "Linear", "parameters": [2,1]}]
     
     def forward(self, x):
-        x = self.layer(x)
+        x = self.layers(x)
         return x
