@@ -2,10 +2,11 @@ import torch
 import torchvision
 import torch.utils
 from torch.utils.data import DataLoader
-from torchvision import datasets
+from torchvision import datasets, transforms
 
 
 from FullyConnectedNet import FullyConnectedNet
+from fc_5x100 import fc_5x100
 from LeNet import LeNet
 from AlexNet import AlexNet
 from VGGNet import VGGNet
@@ -22,7 +23,7 @@ device = (
 )
 learning_rate = 1e-3
 batch_size = 64
-epochs = 30
+epochs = 100 
 dataset = "MNIST"
 num_classes = 10
 model_type = "LeNet"
@@ -102,6 +103,24 @@ def main():
     # fully connected network
     if model_type == "FullyConnectedNet":
         model = FullyConnectedNet().to(device)
+        loss_fn = torch.nn.CrossEntropyLoss()
+        optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+        print(model)
+        for t in range(epochs):
+            print(f"Epoch {t+1}\n-------------------------------")
+            train_loop(train_dataloader, model, loss_fn, optimizer)
+            test_loop(test_dataloader, model, loss_fn)
+        print("Done!")
+
+        # save the model into pth file.
+        state = {
+            'epoch': epochs,
+            'state_dict': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'model_layers': model.model_layers,
+        }
+    elif model_type == "fc_5x100":
+        model = fc_5x100().to(device)
         loss_fn = torch.nn.CrossEntropyLoss()
         optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
         print(model)
@@ -299,14 +318,36 @@ def main():
     return 
 
 
+def record_input_id(dataset_name: str, label: int):
+    if dataset_name == "mnist":
+        dataset = datasets.MNIST(root="./data", train=False, download=False, transform=transforms.Compose([transforms.ToTensor()]))  
+    elif dataset_name == "cifar10":
+        dataset = datasets.CIFAR10(root="./data", train=False, download=False, transform=transforms.Compose([transforms.ToTensor()]))
+    
+    # record the input id by specific label
+    with open(f"{dataset_name}_{label}.txt", "w+") as f:
+        for i, d in enumerate(dataset):
+            # d := tuple(tensor, int) := (image, label)
+            if d[1] == label: 
+                f.write(f"{i}\n")
+
+    print("finished!")
+    return 
+
+
+
 if __name__ == "__main__":
     # dataset_list = ["MNIST", "CIFAR10"]
     dataset_list = ["MNIST"]
+    model_list = ["fc_5x100"]
     # model_list = ["FullyConnectedNet", "LeNet", "AlexNet", "VGGNet"]
     # model_list = ["AlexNet", "VGGNet"]
-    model_list = ["ToyNet", "ToyNetNeg", "CaterinaEx1", "CaterinaEx2", "DeepPolyEx"]
+    # model_list = ["ToyNet", "ToyNetNeg", "CaterinaEx1", "CaterinaEx2", "DeepPolyEx"]
     for d in dataset_list:
         for m in model_list:
             dataset = d
             model_type = m
             main()
+    
+    
+    # record_input_id("mnist", 0)
